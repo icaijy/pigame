@@ -18,6 +18,11 @@ def setup():
     ADC.setup(0x48)                    # Setup PCF8591
     global state
 
+# play: game_over
+def pgo():
+    sounds.game_over.play()
+
+
 
 # set game status
 game_over = False
@@ -83,7 +88,7 @@ class Bomb(Actor):
     def nearalien(self):
         # if bomb is near alien
         if math.sqrt((self.left - alien.left)**2 +
-                     (self.top - alien.top)**2) <= 150:
+                     (self.top - alien.top)**2) <= 175:
             return True
 
     def home(self):
@@ -196,7 +201,7 @@ def update():
         # if don't define "end", the "game_over" sounds will loop
         end = True
         sounds.you_lose.play()
-        clock.schedule_unique(sounds.game_over.play, 2.0)
+        clock.schedule(pgo, 2.0)
 
 
 def on_mouse_down(pos):
