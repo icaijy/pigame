@@ -2,6 +2,11 @@ import PCF8591 as ADC
 import pgzrun
 from random import *
 import math
+import os
+import sys
+
+def restartp():
+    os.execl(sys.executable, sys.executable, *sys.argv)
 
 game_over = False
 end = False
@@ -9,6 +14,8 @@ finish_choose = False
 HEIGHT = 788
 WIDTH = 1024
 #music.play("bgm")
+restart = Actor("restart")
+restart.pos = WIDTH/2, 200
 house = Actor("house")
 house.pos = 75,75
 bombox = Actor("bombox")
@@ -21,7 +28,7 @@ class Alien(Actor):
     def __init__(self, code):
         self.code = str(code)
         Actor.__init__(self,"p"+self.code+"/p"+self.code+"_stand")
-        self.blood = 3
+        self.blood = 5
         self.pos = house.pos
         self.ishurt = False
 
@@ -100,6 +107,7 @@ def draw():
         alien.pos = WIDTH/2, HEIGHT/2
         alien.image = "p"+alien.code+"/p"+alien.code+"_hurt"
         alien.draw()
+        restart.draw()
 
     elif finish_choose:
         alien.draw()
@@ -107,6 +115,8 @@ def draw():
         bomb2.draw()
         bomb3.draw()
         bomb4.draw()
+        for x in range(alien.blood):
+            x+=1
 
 
 
@@ -151,6 +161,9 @@ def play_game_over():
 def on_mouse_down(pos):
     global alien
     global finish_choose
+    if end:
+        if restart.collidepoint(pos):
+            restartp()
     if not finish_choose:
         if alien1.collidepoint(pos):
             alien = Alien(1)
