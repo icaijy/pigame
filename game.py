@@ -5,18 +5,21 @@ import math
 import os
 import sys
 
+
 # restart program
 
 
 def restartp():
     os.execl(sys.executable, sys.executable, *sys.argv)
 
+
 # setup raspberrypi
 
 
 def setup():
-    ADC.setup(0x48)                    # Setup PCF8591
+    ADC.setup(0x48)  # Setup PCF8591
     global state
+
 
 # play: game_over
 
@@ -48,25 +51,26 @@ house.pos = 75, 75
 bombox = Actor("bombox")
 bombox.pos = WIDTH - 75, HEIGHT - 75
 
+
 # class: alien
 
 
 class Alien(Actor):
     def __init__(self, code):
-        self.code = str(code)   # alien code, 1~3
+        self.code = str(code)  # alien code, 1~3
         Actor.__init__(self, "p" + self.code + "/p" + self.code + "_stand")
         self.blood = 5
-        self.home()    # init alien's position(on alien's home)
-        self.ishurt = False     # alien if not hurt
+        self.home()  # init alien's position(on alien's home)
+        self.ishurt = False  # alien if not hurt
 
     def hurt(self):
         self.ishurt = True
         self.image = "p" + self.code + "/p" + \
-            self.code + "_hurt"   # change image to hurt
+                     self.code + "_hurt"  # change image to hurt
         self.blood -= 1
-        sounds.eep.play()   # play sound
+        sounds.eep.play()  # play sound
         self.home()
-        clock.schedule_unique(self.recovery, 1.0)   # recovery after 1.0s
+        clock.schedule_unique(self.recovery, 1.0)  # recovery after 1.0s
 
     def recovery(self):
         self.ishurt = False
@@ -78,8 +82,8 @@ class Alien(Actor):
 
 class Bomb(Actor):
     def __init__(self):
-        Actor.__init__(self, "bomb")     # set image
-        self.home()     # set position
+        Actor.__init__(self, "bomb")  # set image
+        self.home()  # set position
 
     def move(self):
         # move to alien
@@ -88,8 +92,8 @@ class Bomb(Actor):
 
     def nearalien(self):
         # if bomb is near alien
-        if math.sqrt((self.left - alien.left)**2 +
-                     (self.top - alien.top)**2) <= 175:
+        if math.sqrt((self.left - alien.left) ** 2 +
+                     (self.top - alien.top) ** 2) <= 175:
             return True
 
     def home(self):
@@ -100,8 +104,9 @@ class Bomb(Actor):
 class lock(Actor):
     def __init__(self, code, pos):
         self.complete = False
-        self.second = 300   # 5 second
+        self.second = 300  # 5 second
         self.code = str(code)
+        self.pos = pos
         Actor.__init__(self, "lock" + self.code)
 
     def run(self):
@@ -134,7 +139,7 @@ def process(x, y):
     if x - 125 < 15 and x - 125 > -15 and y - 125 < 15 and y - 125 > -15:
         return "home"
     if y == 125:
-        y = 127     # there is a little error with my device
+        y = 127  # there is a little error with my device
     x -= 127
     y -= 127
 
@@ -171,7 +176,7 @@ def draw():
         bomb2.draw()
         bomb3.draw()
         bomb4.draw()
-        
+
         lock1.draw()
         lock2.draw()
         lock3.draw()
@@ -185,9 +190,9 @@ def update():
     global end
 
     a = process(ADC.read(0), ADC.read(1))
-    if finish_choose and not end:   # if game start and not game over
+    if finish_choose and not end:  # if game start and not game over
         if alien.blood <= 0:
-            game_over = True    # if alien don't have blood
+            game_over = True  # if alien don't have blood
 
         if a != "home" and not alien.ishurt:
             # don't let alien flies out of stage
