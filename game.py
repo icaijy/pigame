@@ -19,9 +19,10 @@ def setup():
     global state
 
 # play: game_over
+
+
 def pgo():
     sounds.game_over.play()
-
 
 
 # set game status
@@ -96,6 +97,17 @@ class Bomb(Actor):
         self.top = bombox.top + randint(-100, 100)
 
 
+class lock(Actor):
+    def __init__(self, code, pos):
+        self.complete = False
+        self.second = 300   # 5 second
+        self.code = str(code)
+        Actor.__init__(self, "lock" + self.code)
+
+    def run(self):
+        self.second -= 1
+
+
 # alien for choose
 alien1 = Actor('p1/p1_front')
 alien2 = Actor('p2/p2_front')
@@ -110,6 +122,11 @@ bomb1 = Bomb()
 bomb2 = Bomb()
 bomb3 = Bomb()
 bomb4 = Bomb()
+
+lock1 = lock(1, (WIDTH / 4, HEIGHT / 4))
+lock2 = lock(2, (WIDTH / 4 * 3, HEIGHT / 4 * 3))
+lock3 = lock(3, (WIDTH / 4, HEIGHT / 4))
+lock4 = lock(4, (WIDTH / 4 * 3, HEIGHT / 4 * 3))
 
 
 def process(x, y):
@@ -154,6 +171,11 @@ def draw():
         bomb2.draw()
         bomb3.draw()
         bomb4.draw()
+        
+        lock1.draw()
+        lock2.draw()
+        lock3.draw()
+        lock4.draw()
         for x in range(alien.blood):
             x += 1
 
